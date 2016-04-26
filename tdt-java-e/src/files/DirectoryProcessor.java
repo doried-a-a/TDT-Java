@@ -103,8 +103,6 @@ public class DirectoryProcessor {
             		System.out.println(++skipped);
             		continue;
             	}
-            	
-            
                  
                 String output = f.getStoryUrl() + "\n" + f.getStoryTitle() + "\n" + f.getStoryDateAsString() + "\n" + processedContent;
 

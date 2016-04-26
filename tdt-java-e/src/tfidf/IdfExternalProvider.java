@@ -6,6 +6,7 @@
 package tfidf;
 
 import java.util.HashMap;
+
 import tdt.LexicalWord;
 import tdt.Word;
 
@@ -98,11 +99,8 @@ public class IdfExternalProvider implements IIDFProvider{
     }
     
     public double getIdf(Word w){
-    	int a = getDocumentsCount();
-    	int b = getDf(w);
-    	
-    	
-        return  Math.log(((double)a)/(b));
+        return  Math.log( ((double)this.getTotalDocumentsCount())/this.getDocumentFrequency(w)) /
+   			 Math.log( ((double)this.getTotalDocumentsCount())+1);
     }
 
     

@@ -35,7 +35,7 @@ public class TDTJava {
     	String pathToAllStories = "/home/doried/tdt/test/all/";
     	String topicPath = "/home/doried/tdt/data/test2/text/25/";
     	int numOfTrainingDocs = 3; // hello, hello, I'm testi400ng this keyboard, I hope it will be fine
-    	double threshold = 0.1295; //0.437
+    	double threshold = 0.1295;//0.1295; //0.437
     	double thresholdAdaptIncrement =0.1*threshold; //0.037;
     	int numOfWordsToKeep=350;
     	
@@ -84,6 +84,7 @@ public class TDTJava {
         int num_of_correct_no =0;
         
         double sumYesSim=0; int cntYes=0;
+        
         List<Double> similarities = new ArrayList();
         
         for(File file:allStories)
@@ -132,7 +133,8 @@ public class TDTJava {
             System.out.println(topic.getTopicTag() + "=" + DirectoryProcessor.extractTopicTag(f.getStoryTag()) + ":" + sameTopic + ", ourDec=" + decision + ", sim=" + sim);	
         }
         
-        System.out.println("# Stories:" + allStories.size() + "\nFA:" + num_of_false_alarms + "\nMisses:" + num_of_misses + "\nCorrect-Yes:" + num_of_correct_yes + "\nCorrect-No:"+num_of_correct_no);
+        System.out.println("# Stories:" + allStories.size() + "\nFA:" + num_of_false_alarms + " (" +  ((double)num_of_false_alarms/(allStories.size()-cntYes))+")"+
+        		"\nMisses:" + num_of_misses + " (" + ((double)num_of_misses/(cntYes)) + ")"+   "\nCorrect-Yes:" + num_of_correct_yes + "\nCorrect-No:"+num_of_correct_no);
         double variance=0;
         double avg = sumYesSim/cntYes;
         for(double si:similarities){
