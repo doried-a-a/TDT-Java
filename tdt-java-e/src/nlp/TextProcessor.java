@@ -11,7 +11,12 @@ package nlp;
  */
 public class TextProcessor {
 
-    public static String processText(String text) {
+	static StopWordsRemover stopwordsRemover ;
+	
+    public static String processText(String text) throws Exception {
+    	if(stopwordsRemover==null)
+    		stopwordsRemover = new StopWordsRemover();
+    	
         String d = text.toLowerCase();
         String t = "";
         for (int j = 0; j < d.length(); j++) {
@@ -24,13 +29,17 @@ public class TextProcessor {
         t = t.replaceAll(" +", " ");
         String[] words = t.split(" ");
         String res = "";
-        for (String word : words) {;
-            Stemmer s = new Stemmer();
-            s.add(word.toCharArray(), word.toCharArray().length);
-            s.stem();
-            res += " " + s.toString();
-        }
-
+        for (String word : words) 
+        {
+	        if(stopwordsRemover.isStopWord(word))
+	        	continue;
+	        
+	        Stemmer s = new Stemmer();    
+	        s.add(word.toCharArray(), word.toCharArray().length);
+	        s.stem();
+	        res += " " + s.toString();
+	    }
+        
         return res;
     }
 }

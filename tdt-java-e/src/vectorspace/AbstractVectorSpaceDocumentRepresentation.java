@@ -100,7 +100,9 @@ public abstract class AbstractVectorSpaceDocumentRepresentation extends Document
     }
     
     public double getValue(Word w){
-        return elementValueTransformer( w , this.documentVector.getOrDefault(w,0.0) );
+        double val = elementValueTransformer( w , this.documentVector.getOrDefault(w,0.0) );
+      
+        return val;
     }
     
     public double getActualValue(Word w){

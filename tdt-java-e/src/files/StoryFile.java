@@ -67,7 +67,7 @@ public class StoryFile {
 
 	private String storyContent;
 	
-	public StoryFile(File file,String tag) throws ParseException, FileNotFoundException{
+	public StoryFile(File file,String tag,boolean processText) throws Exception{
 		this.storyTag = tag;
 		
 		Scanner sc = new Scanner(file);
@@ -80,6 +80,7 @@ public class StoryFile {
     	
         if (dateStr.contains("."))
         	dateStr = dateStr.substring(0, dateStr.indexOf('.'));
+        
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         storyDate = simpleDateFormat.parse(dateStr);
     	
@@ -87,5 +88,7 @@ public class StoryFile {
     	while (sc.hasNextLine()){
     		storyContent += sc.nextLine();
     	}
+    	if(processText)
+    		storyContent = nlp.TextProcessor.processText(storyContent);
 	}
 }

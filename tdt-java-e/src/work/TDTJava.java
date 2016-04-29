@@ -23,28 +23,32 @@ import vectorspace.*;
 
 public class TDTJava {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) throws Exception{
-    	//work();  
     	trackATopic();
     }
-    //TODO check similarity measures
+    
+    
+    
     public static void trackATopic() throws Exception{
+    	
+    	//those are text-processed
     	String pathToAllStories = "/home/doried/tdt/test/all/";
+    	// those are not text-processed
     	String topicPath = "/home/doried/tdt/data/test2/text/25/";
-    	int numOfTrainingDocs = 3; // hello, hello, I'm testi400ng this keyboard, I hope it will be fine
+    	
+    	int numOfTrainingDocs = 3; 
     	double threshold = 0.1295;//0.1295; //0.437
     	double thresholdAdaptIncrement =0.1*threshold; //0.037;
     	int numOfWordsToKeep=350;
     	
     	// Bulding idf
+    	
     	IdfExternalProvider idfProvider = new IdfExternalProvider();
         List<File> allStories = DirectoryProcessor.getListOfFiles(pathToAllStories);
 
         for(File file:allStories){ 
-        	StoryFile f = DirectoryProcessor.readStoryFile(file);
+        	// with stop-words removed
+        	StoryFile f = DirectoryProcessor.readStoryFile(file,false);
             String fileContent = f.getStoryContent();
             TfidfVectorSpaceDocumentRepresentation doc = new TfidfVectorSpaceDocumentRepresentation(fileContent,idfProvider,f.getStoryDate());
             idfProvider.indexDocument(doc);
@@ -53,16 +57,15 @@ public class TDTJava {
         //initiating training stories
         List<TfidfVectorSpaceDocumentRepresentation> storiesSeen = new ArrayList();
         
-        //Reading the tnumOfWordsToKeepopic
-        TopicFiles topicFiles = DirectoryProcessor.readTopicFiles(new File(topicPath));
+        //Reading the topic files (and text-processing them)
+        TopicFiles topicFiles = DirectoryProcessor.readTopicFiles(new File(topicPath),true);
         
         Topic topic = new Topic(idfProvider, topicFiles.getAverageDate());
         topic.setTopicTag(topicFiles.getTag());
         
         int cc=0;
         for(int i=0;i<Math.min(numOfTrainingDocs,topicFiles.getStories().size());i++){
-        	StoryFile f = topicFiles.getStories().get(i);
-        	f.setStoryContent( TextProcessor.processText(f.getStoryContent()) );
+        	StoryFile f = topicFiles.getStories().get(i);	
             Date date = f.getStoryDate();
             TfidfVectorSpaceDocumentRepresentation storyTfidf = new TfidfVectorSpaceDocumentRepresentation(f.getStoryContent(), idfProvider, date);
             //storyTfidf.filterLightWords(numOfWordsToKeep,false);
@@ -89,7 +92,7 @@ public class TDTJava {
         
         for(File file:allStories)
         {
-        	StoryFile f = DirectoryProcessor.readStoryFile(file);
+        	StoryFile f = DirectoryProcessor.readStoryFile(file,false);
             TfidfVectorSpaceDocumentRepresentation doc = new TfidfVectorSpaceDocumentRepresentation(
             		f.getStoryContent(), idfProvider, f.getStoryDate());
             doc.filterLightWords(numOfWordsToKeep,false);

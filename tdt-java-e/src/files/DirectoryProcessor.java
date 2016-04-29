@@ -37,18 +37,17 @@ public class DirectoryProcessor {
     
     
     /**
-     * @throws FileNotFoundException 
-     * @throws ParseException 
+     * @throws Exception 
      */
-    public static StoryFile readStoryFile(File file) throws FileNotFoundException, ParseException{
-    	StoryFile sfile = new StoryFile(file, extractTopic_StoryTag(file.getName()));
+    public static StoryFile readStoryFile(File file,boolean processText) throws Exception{
+    	StoryFile sfile = new StoryFile(file, extractTopic_StoryTag(file.getName()),processText);
     	return sfile;
     }
     
     /**
      * Creates a topic, putting its tag as the directtory name (last directory name in its path). Ex: /home/doried/22 so topicTag=22
      */
-    public static TopicFiles readTopicFiles(File topicDir) throws Exception{
+    public static TopicFiles readTopicFiles(File topicDir,boolean processText) throws Exception{
     	
     	String topicDirStr = topicDir.getAbsolutePath();
     	if(topicDirStr.endsWith("/"))
@@ -56,16 +55,24 @@ public class DirectoryProcessor {
     	
     	String topicTag = topicDirStr.substring(topicDirStr.lastIndexOf("/")+1);
     	
-    	return readTopicFiles(topicDir, topicTag); 
+    	return readTopicFiles(topicDir, topicTag,processText); 
     }
-  
     
-    public static TopicFiles readTopicFiles(File topicDir,String topicTag) throws Exception{
+   
+    public static TopicFiles readTopicFiles(File topicDir,String topicTag,boolean processText) throws Exception{
+    	
     	List<File> storyFiles = getListOfFiles(topicDir.getAbsolutePath());
+    	
     	List<StoryFile> stories = new ArrayList<StoryFile>();
     	
     	for(File f:storyFiles){
-    		stories.add(new StoryFile(f, extractTopic_StoryTag(f.getName())));
+    		StoryFile sFile = new StoryFile(f,extractTopic_StoryTag(f.getName()),processText);
+    		
+    		if (sFile.getStoryContent().split(" ").length < 200){
+        		continue;
+        	}
+    		
+    		stories.add(sFile);
     	}
     	
     	TopicFiles topicFiles = new TopicFiles(stories,topicTag);
@@ -86,7 +93,7 @@ public class DirectoryProcessor {
     
     //TODO Need test
     static int skipped=0;
-    public static void copyTopicFilesToOneDirectory() throws FileNotFoundException, URISyntaxException, IOException, ParseException{
+    public static void copyTopicFilesToOneDirectory() throws Exception{
         String topicsPath = "/home/doried/tdt/data/test2/text/";
         String outputPath = "/home/doried/tdt/test/all/";
         
@@ -97,7 +104,7 @@ public class DirectoryProcessor {
             List<File> topicFiles = getListOfFiles(topicDir.getAbsolutePath());
             
             for(File storyFile : topicFiles){
-            	StoryFile f = readStoryFile(storyFile);
+            	StoryFile f = readStoryFile(storyFile,false);
             	String processedContent = TextProcessor.processText(f.getStoryContent());
             	if (processedContent.split(" ").length < 200){
             		System.out.println(++skipped);

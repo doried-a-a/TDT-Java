@@ -99,7 +99,10 @@ public class IdfExternalProvider implements IIDFProvider{
     }
     
     public double getIdf(Word w){
-        return  Math.log( ((double)this.getTotalDocumentsCount())/this.getDocumentFrequency(w)) /
+    	double df = this.getDocumentFrequency(w);
+    	double dc=(double)this.getTotalDocumentsCount();
+    	
+        return  Math.log(dc/df) / 
    			 Math.log( ((double)this.getTotalDocumentsCount())+1);
     }
 

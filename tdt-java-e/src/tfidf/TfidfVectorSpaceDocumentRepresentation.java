@@ -83,10 +83,19 @@ public class TfidfVectorSpaceDocumentRepresentation extends vectorspace.Abstract
         
         //return  (actualValue==0.0 ? (0.0) : (1.0 + Math.log(actualValue)) ) 
         //        * idfProvider.getInverseDocumentFrequency(w);
+    	if(w.toString().equals("unsurpisngli")){
+    		int aa=1;
+    	}
         double tf = actualValue/(actualValue + 0.5 + 1.5*this.getOriginalSumOfValues()/idfProvider.getAverageDocumentLength());
         double idf = idfProvider.getInverseDocumentFrequency(w);
         
-        return  tf*idf;
+        double val = tf*idf;
+        
+        if(val>400){
+        	int a=0;
+        	System.out.println(w.toString() + " : " + val);
+        }
+        return val;
        
     }
     
