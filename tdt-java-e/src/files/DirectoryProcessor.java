@@ -94,6 +94,7 @@ public class DirectoryProcessor {
     //TODO Need test
     static int skipped=0;
     public static void copyTopicFilesToOneDirectory() throws Exception{
+    	skipped=0;
         String topicsPath = "/home/doried/tdt/data/test2/text/";
         String outputPath = "/home/doried/tdt/test/all/";
         
@@ -118,12 +119,48 @@ public class DirectoryProcessor {
                 wr.write(output);
                 wr.close();
             }
-        }
-        
-        
+        }    
     }
     
+    
+    public static void copyTopicsAndTextProcessThem() throws Exception{
+    	skipped=0;
+        String topicsPath = "/home/doried/tdt/data/test2/text/";
+        String outputPath = "/home/doried/tdt/test/topics/";
+        
+        List<File> topicDirs = getListOfDirectories(topicsPath);
+        
+        
+        for (File topicDir : topicDirs){
+        	String dirName = topicDir.getName();
+        	
+        	File newDir = new File(outputPath + dirName);
+        	if(!newDir.exists())
+        		newDir.mkdir();
+        	
+            List<File> topicFiles = getListOfFiles(topicDir.getAbsolutePath());
+            
+            for(File storyFile : topicFiles){
+            	StoryFile f = readStoryFile(storyFile,false);
+            	String processedContent = TextProcessor.processText(f.getStoryContent());
+            	if (processedContent.split(" ").length < 200){
+            		System.out.println(++skipped);
+            		continue;
+            	}
+                 
+                String output = f.getStoryUrl() + "\n" + f.getStoryTitle() + "\n" + f.getStoryDateAsString() + "\n" + processedContent;
+
+                String output_story_name = topicDir.getName() + "-" + storyFile.getName();
+                PrintWriter wr = new PrintWriter(new File( newDir.getPath() +"/" + output_story_name ));
+                wr.write(output);
+                wr.close();
+            }
+        }    
+    }
+    
+    
     public static void main(String[] args) throws Exception {
+    	copyTopicsAndTextProcessThem();
         //copyTopicFilesToOneDirectory();
     }
 }

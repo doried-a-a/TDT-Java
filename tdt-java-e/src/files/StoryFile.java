@@ -90,5 +90,14 @@ public class StoryFile {
     	}
     	if(processText)
     		storyContent = nlp.TextProcessor.processText(storyContent);
+    	
+//    	String words[] = storyContent.split(" ");
+//    	storyContent="";
+//    	for(String word:words)
+//    		if(word.length()<3)
+//    			continue;
+//    		else storyContent += word + " ";
+//    	storyContent = storyContent.trim();
+    	
 	}
 }

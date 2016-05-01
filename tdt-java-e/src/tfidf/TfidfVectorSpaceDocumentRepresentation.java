@@ -134,7 +134,7 @@ public class TfidfVectorSpaceDocumentRepresentation extends vectorspace.Abstract
         
         double days = Math.abs(Math.round((this.getDate().getTime() - doc.getDate().getTime()) / (double) 86400000));
         double timeSimilarity = Math.exp(-0.5*days);
-        return 0.8 * cosineSimilarity ;// + 0.2*timeSimilarity;
+        return 1 * cosineSimilarity ;// + 0.2*timeSimilarity;
         
     }
     
