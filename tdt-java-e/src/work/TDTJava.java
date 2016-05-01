@@ -33,6 +33,8 @@ public class TDTJava {
     }
     
     
+    
+    
     public static void testTracking() throws Exception{
     	//those are text-processed
     	String pathToAllStories = "/home/doried/tdt/test/all/";
@@ -49,9 +51,9 @@ public class TDTJava {
             TfidfVectorSpaceDocumentRepresentation doc = new TfidfVectorSpaceDocumentRepresentation(fileContent,idfProvider,f.getStoryDate());
             idfProvider.indexDocument(doc);
         }
-    
+        
         double threshold = 0.125;
-        String topicPath = "/home/doried/tdt/test/topics/31/";
+
         System.out.println("Number of all stories: " + allStories.size() + "\n");
         
         ArrayList<Double> thresholds = new ArrayList<Double>();
@@ -59,13 +61,25 @@ public class TDTJava {
         ArrayList<Double> fas = new ArrayList<Double>();
         ArrayList<Double> misses = new ArrayList<Double>();
         
+        String [] topics = {"5","21","23","25","31","37","39"};
+        
         for(threshold=0.05;threshold<0.8;threshold+=0.015){
-        	Result result = trackATopic(threshold, numOfTrainingDocs, topicPath, idfProvider,allStories,2,1);
+        	double overallFA =0, overallMisses=0; double overallCost = 0;
+            
+        	for(String topicName : topics)
+            {
+            	String topicPath = "/home/doried/tdt/test/topics/" + topicName + "/";
+	        	Result result = trackATopic(threshold, numOfTrainingDocs, topicPath, idfProvider,allStories,2,1);
+	        	overallFA += result.getFalseAlarmRate();
+	        	overallMisses += result.getMissRate();
+	        	overallCost += result.getCost();
+            }
         	thresholds.add(threshold);
-        	costs.add(result.getCost());
-        	fas.add(result.getFalseAlarmRate());
-        	misses.add(result.getMissRate());
+        	costs.add(overallCost/topics.length);
+        	fas.add(overallFA/topics.length);
+        	misses.add(overallMisses/topics.length);
         }
+        
         
         Drawer drawer = new Drawer("Costs","threshold","cost-value");
         drawer.draw(thresholds, costs,"cost");
@@ -74,13 +88,13 @@ public class TDTJava {
         
     }
     
+    
     public static Result trackATopic(double threshold, int numOfTrainingDocs,
     		String topicPath , IdfExternalProvider idfProvider,List<File> allStories,double C_miss,double C_false_alarm) throws Exception{
     	
     	double thresholdAdaptIncrement =0.1*threshold; //0.037;
     	int numOfWordsToKeep=350;
-    	
-    	
+    		
         //initiating training stories
         List<TfidfVectorSpaceDocumentRepresentation> storiesSeen = new ArrayList();
         
@@ -156,9 +170,7 @@ public class TDTJava {
             	if(decision)
             		num_of_correct_yes++;
             	else
-            		num_of_correct_no++;
-                        
-            //System.out.println(topic.getTopicTag() + "=" + DirectoryProcessor.extractTopicTag(f.getStoryTag()) + ":" + sameTopic + ", ourDec=" + decision + ", sim=" + sim);	
+            		num_of_correct_no++;	
         }
         
         Result result = new Result(num_of_misses, num_of_false_alarms, cntYes, allStories.size());
@@ -175,136 +187,6 @@ public class TDTJava {
         		+ "\n----------------------\n");
         
         return result;
-        
-//        double variance=0;
-//        double avg = sumYesSim/cntYes;
-//        for(double si:similarities){
-//        	variance += (si-avg)*(si-avg);
-//        }
-//        variance/=cntYes;
-//        double sd=Math.sqrt(variance);
-//        System.out.println(sumYesSim/cntYes + " " + cntYes + " sd=" + sd + " , avg-3sd=" + (avg-3*sd));
-    }
-    
-    public static void work() throws Exception{
-// Files in this dir are textually preprocessed
-//        
-//        String pathToAllStories = "/home/doried/tdt/test/all/";
-//        List<File> storiesFiles = DirectoryProcessor.getListOfFiles(pathToAllStories);
-//        
-//        TopicCollection coll = new TopicCollection();
-//        coll.enableAutomaticDFUpdating(false);
-//
-//        for(File file:storiesFiles){
-//        	String [] f = DirectoryProcessor.readStoryFile(file);
-//            String fileContent = f[3];
-//            String date_str = f[2];
-//            coll.updateTfidfWithStory(fileContent);
-//        }
-//        
-//        
-//        for(File file:storiesFiles){
-//        	String [] f = DirectoryProcessor.readStoryFile(file);
-//            String fileContent = f[3];
-//            System.err.println(f[2]);
-//            String date_str = f[2];
-//            if (f[2].contains("."))
-//            	date_str = f[2].substring(0,f[2].indexOf('.'));
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            Date date = simpleDateFormat.parse(date_str);
-//            coll.addStory(fileContent,file.getName(),date);
-//        }
-//        
-//        int num_of_true  = 0;
-//        int num_of_false = 0;
-//        for (int i=0;i<coll.topics.size();i++){
-//            Topic t = coll.topics.get(i);
-//            String tag = t.topicTag; 
-//            String tag_part1 = tag.substring(0,tag.indexOf("-"));
-//            
-//            System.out.println("Topic " + i + "(" + tag_part1 + ") has stories:");
-//            for (int j=0;j<t.storyTitles.size();j++){
-//            	String stag_part1 = t.storyTitles.get(j).substring(0,tag.indexOf("-"));
-//            
-//            	System.out.println(t.storyTitles.get(j) + " - " + stag_part1);
-//            	
-//            	if (tag_part1.equals(stag_part1))
-//            		num_of_true++;
-//            	else
-//            		num_of_false++;
-//            }
-//            System.out.println("-----------------");
-//        }
-//        
-////        int numClustersOk = 0 , numClustersFalse = 0;
-////        for (int i=0;i<coll.topics.size();i++){
-////            Topic t = coll.topics.get(i);
-////            for (int j=0;j<coll.topics.size();j++){
-////            	if (i==j)
-////            		continue;
-////            	Topic q = coll.topics.get(j);
-////            	if(t.topic.getSimilarity(q.topic)>0.535)
-////            		if (t.topicTag.substring(0,t.topicTag.indexOf('-')).equals(q.topicTag.substring(0,t.topicTag.indexOf('-'))))
-////            			numClustersOk++;
-////            		else
-////            			numClustersFalse++;
-////            		//System.out.println(t.topicTag + " = " + q.topicTag + " ==> " + t.topic.getSimilarity(q.topic) );
-////            }
-////          
-////        }
-////        System.out.println("Stories that could be moved correctly " + numClustersOk + "\n" + 
-////        "Stories that could be mved incorrectly " + numClustersFalse);
-////        
-//        int numOfSmallTopics = 0;
-//        double sumMovedCorrectly=0;
-//        int numMovedCorrectly = 0;
-//        int numMovedInorrectly = 0;
-//        double sumMovedIncorrectly=0;
-//        for (int i=0;i<coll.topics.size();i++){
-//            Topic t = coll.topics.get(i);
-//            if (t.stories.size() > 2 )
-//            	continue;
-//            
-//            numOfSmallTopics++;
-//           // System.out.println("Topic " + t.topicTag + " has " + t.stories.size() + " stories only..");
-//            
-//            for (int j=0;j<t.stories.size();j++){
-//            	
-//            	double maxSim = 0; int maxInd = -1;
-//            	
-//            	
-//            	for (int k=0;k<coll.topics.size();k++){
-//                 	if (i==k)
-//                 		continue;
-//                 	
-//                 	Topic q = coll.topics.get(k);
-//                 	if(t.topicRepresentation.getSimilarity(q.topicRepresentation)> maxSim){
-//                 		maxSim = t.topicRepresentation.getSimilarity(q.topicRepresentation);
-//                 		maxInd = k;
-//                 	}
-//                 }
-//            	System.out.println ("Story " + t.storyTitles.get(j) + " to " + coll.topics.get(maxInd).topicTag + " for " + maxSim);
-//            	if (t.storyTitles.get(j).substring(0,t.storyTitles.get(j).indexOf('-')).equals(coll.topics.get(maxInd).topicTag.substring(0,coll.topics.get(maxInd).topicTag.indexOf('-')))){
-//            		numMovedCorrectly++;
-//            		sumMovedCorrectly +=maxSim;
-//            	}
-//            	else{
-//            		numMovedInorrectly++;
-//            		sumMovedIncorrectly+=maxSim;
-//            	}
-////        			numClustersOk++;
-//            	
-//            }
-//        }
-//        System.out.println("Moved correctly = " + numMovedCorrectly + " avg= " + (sumMovedCorrectly/numMovedCorrectly) +
-//        		"\nMoved incorrectly = " + numMovedInorrectly + " avg= " + (sumMovedIncorrectly/numMovedInorrectly));
-//        System.out.println("There was " + numOfSmallTopics + " fake topics.");         
-//        
-//        System.out.println("# topics = " + coll.topics.size()); 
-//        System.out.println(num_of_true + " true\n"+num_of_false + " false.");
-//        
-//        System.out.println("AvgSim = " + coll.getAvgSimilarity());
-
     }
     
 }
