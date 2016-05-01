@@ -67,7 +67,7 @@ public class TDTJava {
         	misses.add(result.getMissRate());
         }
         
-        Drawer drawer = new Drawer();
+        Drawer drawer = new Drawer("Costs","threshold","cost-value");
         drawer.draw(thresholds, costs,"cost");
         drawer.draw(thresholds, fas,"false alarm");
         drawer.draw(thresholds, misses,"miss");

@@ -14,14 +14,18 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class Drawer {
-	
-	double x[]; double y[];
 
 	ChartPanel panel;
 	XYSeriesCollection dataset;
-	
 	private Frame frame;
-	public Drawer(){
+	String title;
+	String xAxis;
+	String yAxis;
+	
+	public Drawer(String title,String xAxis,String yAxis){
+		this.title = title;
+		this.xAxis=xAxis;
+		this.yAxis=yAxis;
 		
 		frame = new Frame();
 		frame.setSize(600, 400);
@@ -47,9 +51,9 @@ public class Drawer {
         
         
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "XY Chart",
-                "x-axis",
-                "y-axis",
+                this.title,
+                this.xAxis,
+                this.yAxis,
                 dataset, 
                 PlotOrientation.VERTICAL,
                 true,
