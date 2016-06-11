@@ -1,0 +1,572 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"file",
+				"file_info"
+			],
+			[
+				"info",
+				"info"
+			],
+			[
+				"u",
+				"utf-8"
+			],
+			[
+				"sorted",
+				"sorted_x"
+			],
+			[
+				"site",
+				"site_name"
+			],
+			[
+				"si",
+				"site_name"
+			],
+			[
+				"new",
+				"new_topic"
+			],
+			[
+				"ex",
+				"exists"
+			],
+			[
+				"inter",
+				"intersection"
+			],
+			[
+				"done",
+				"done_urls"
+			],
+			[
+				"do",
+				"done_folders"
+			],
+			[
+				"topic",
+				"topic_number"
+			],
+			[
+				"inet",
+				"intersection"
+			],
+			[
+				"url",
+				"url"
+			],
+			[
+				"date",
+				"date_val"
+			],
+			[
+				"title",
+				"titletext"
+			],
+			[
+				"write",
+				"write"
+			],
+			[
+				"co",
+				"codecs"
+			],
+			[
+				"down",
+				"download_path"
+			],
+			[
+				"get",
+				"get_last_filename"
+			],
+			[
+				"inf",
+				"info_file"
+			],
+			[
+				"ran",
+				"rand_hours"
+			],
+			[
+				"tmp",
+				"tmp_file"
+			],
+			[
+				"to",
+				"topic_number"
+			],
+			[
+				"pt",
+				"print"
+			],
+			[
+				"str",
+				"strip"
+			],
+			[
+				"line",
+				"line"
+			],
+			[
+				"top",
+				"topic_title"
+			],
+			[
+				"fail",
+				"failed"
+			],
+			[
+				"failed",
+				"failed_downloads"
+			],
+			[
+				"todo",
+				"todo"
+			],
+			[
+				"len",
+				"len_todo"
+			],
+			[
+				"confi",
+				"write_config"
+			],
+			[
+				"me",
+				"make_dir"
+			],
+			[
+				"buffer",
+				"buffer_lines"
+			],
+			[
+				"read",
+				"read_config"
+			],
+			[
+				"lin",
+				"line_num"
+			],
+			[
+				"con",
+				"config"
+			],
+			[
+				"faile",
+				"failed_downloads"
+			],
+			[
+				"in",
+				"infofile_path"
+			],
+			[
+				"dow",
+				"download_search_results"
+			],
+			[
+				"done_",
+				"done_path"
+			],
+			[
+				"bi",
+				"buffer_file"
+			],
+			[
+				"cl",
+				"close"
+			],
+			[
+				"buff",
+				"buffer_file"
+			],
+			[
+				"todo_",
+				"todo_file"
+			],
+			[
+				"b",
+				"buffer"
+			],
+			[
+				"bu",
+				"buffer_lines"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "html_parser.py",
+			"settings":
+			{
+				"buffer_size": 32311,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/lampp/phpmyadmin/config.inc.php",
+			"settings":
+			{
+				"buffer_size": 5107,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\nimport sys\nimport os\nimport codecs\nimport urllib\nimport configparser\nimport re\n\nfrom datetime import datetime,timedelta\nfrom os import listdir\nfrom os.path import isfile, join\nfrom os.path import basename\nfrom random import randint\n\nsys.path.insert(0,\"/home/doried/shamra/python/video\")\nsys.path.insert(0,\"/home/doried/shamra/python/lib\")\n\nimport fix\nfrom bs4 import BeautifulSoup\n\n\n\nconfig_file_path = \"/home/doried/tdt/data/work1/config.ini\"\n\ndef write_config(key,val):\n	config = configparser.ConfigParser()\n	config.read(config_file_path)\n	\n	config[\"SETTINGS\"][key] = str(val)\n\n	with open(config_file_path, 'w') as configfile: \n		config.write(configfile)\n\ndef read_config(key):\n	config = configparser.ConfigParser()\n	config.read(config_file_path)\n	return config[\"SETTINGS\"][key];\n\n\ndef get_lines_of_file(f):\n	lines = []\n	while 1<2:\n		line = f.readline().strip()\n		if len(line)==0:\n			break;\n		lines.append(line)\n	return lines\n\n\ndef test_buffer_for_redundancies(buffer_file,done_file):\n\n	buffer_lines = get_lines_of_file(buffer_file)\n\n	done_lines = get_lines_of_file(done_file)\n	\n	done_folders = done_lines[0::3]\n	done_titles = done_lines[1::3]\n	done_urls = done_lines[2::3]\n	\n	done = zip(done_folders,done_titles,done_urls)\n\n	intersection = []\n\n	index = 0\n	while index<len(buffer_lines):\n		\n\n		l1 = buffer_lines[index+0]\n		l2 = buffer_lines[index+1]\n		l3 = buffer_lines[index+2]\n\n		index = index + 3\n\n		for l in [l2,l3]:\n			if l[0] != '#' :\n				tmp = [x for x in done if l==x[2]]\n				if len(tmp)>0:\n					intersection.append(tmp[0])\n\n	if len(intersection)==0:\n		print 'Ok.. no intersection'\n	else:\n		print 'Intersections in line(s):'\n		for intersect in intersection:\n			print intersect\n		print \"===========================\"\n\n	return intersection\n\n\ndef get_number_of_lines(file_path):\n	f = codecs.open(file_path,\"r\",\"utf-8\")\n	lines = get_lines_of_file(f)\n	f.close()\n	return len(lines)\n\n\ndef get_last_filename(dir):\n	onlyfiles = [int(os.path.splitext(f)[0]) for f in listdir(dir) if f != \"info.txt\" and isfile(join(dir, f))]\n	if len(onlyfiles)==0:\n		return -1\n	return max(onlyfiles)\n\n\ndef extract_date(date_str):\n\n	date = datetime.now()\n\n	try:\n		m = re.match(\"\\W*\\D*(\\d+) (hours|hour|second|seconds|minute|minutes)(.*)\", date_str)\n		num = int(m.group(1))\n		unit = m.group(2)\n		\n		if unit in ['hour' , 'hours']:\n			date = date + timedelta(hours=-num)\n		elif unit in ['minute' , 'minutes']:\n			date = date + timedelta(minutes=-num)\n		elif unit in ['second' , 'seconds']:\n			date = date + timedelta(seconds=-num)\n	except:\n		date = datetime.strptime(date_str, '%b %d, %Y')\n		rand_hours = randint(0,23);\n		date = date + timedelta(hours=rand_hours)\n\n	print date_str + \" : \" + str(date)\n	return date\n\n\n\ndef download_search_results_to_topic(topic_title, search_url, download_path):\n	url = search_url\n\n\n	if download_path[-1] != '/':\n		download_path = download_path + '/';\n\n	urls = []\n\n	try:\n		info_file = codecs.open(download_path + \"info.txt\" , \"r\" , \"utf-8\");\n		urls = get_lines_of_file(info_file)\n		urls = urls[0::3]\n		info_file.close;\n	except:\n		print \"Creating directory for topic\";\n		try:\n			os.makedirs(download_path)\n		except:\n			print \"Directory exists.Continuing...\"\n\n\n	info_file = codecs.open(download_path + \"info.txt\" , \"a\" , \"utf-8\");\n\n\n	fix.fix(search_url,\"tmp.txt\")\n\n	doc_file = codecs.open(\"tmp.txt\", \"r\",\"utf-8\")\n	doc= doc_file.read()\n	doc_file.close()\n\n	print \"Downloaded search results. Now parsing them..\";\n\n	soup = BeautifulSoup(doc,'html.parser')\n	articles = soup.findAll(\"div\", {\"id\" : \"story-articles\"})[0];\n	titles = articles.findAll(\"h2\" , {\"class\" : \"title\"})\n	subtitles = articles.findAll(\"div\" , {\"class\" : \"sub-title\"});	\n	idx = -1\n\n	c=get_last_filename(download_path)+1\n\n	for title in titles:\n		\n		idx = idx+1\n\n		a = title.findAll(\"a\")[0];\n		url = a[\"href\"];\n\n		if url in urls:\n			print 'Url ' + url + ' exists. skipping..'\n			continue\n\n\n		titletext = title.findAll(\"span\" , {\"class\" : \"titletext\"})[0].text.encode(\"utf-8\")\n\n		date = subtitles[idx].findAll(\"span\" , {\"class\" : \"date\"})[0].text.strip();\n		if not (date[0] >= '0' and date[0] <= '9'):\n			date = date[1:]\n		if not (date[-1] >= '0' and date[-1] <= '9'):\n			date = date[0:-1]\n		date_val = extract_date(date)\n\n\n		file_name = str(download_path) + str(`c`) + \".html\" ;\n		print \"Downloading \" + url + \" to file \" + file_name; \n		fix.fix(url,file_name)\n\n		info_file.write(url + \"\\n\" + titletext.decode(\"utf-8\") + \"\\n\" + str(date_val) + \"\\n\")\n		c = c+1\n\n	info_file.close();\n	return 1<2\n\n\ndef trunc():\n	tmp_file = codecs.open( \"/home/doried/tdt/stats.txt\" , \"r\" , \"utf-8\" )\n	out_file = codecs.open( \"/home/doried/tdt/tmp1.txt\" , \"w\" , \"utf-8\" )\n\n\n	while 1<2:\n		line = tmp_file.readline().strip();\n		if len(line)==0:\n			break;\n		line = line [7:]\n		line = line.replace(\"www.\",\"\")\n		line = line[0: line.index(\".\")];\n		out_file.write(line + \"\\n\")\n\n\n\ndef main():\n\n	buffer_path = \"/home/doried/tdt/data/work1/buffer.txt\";\n	todo_path = \"/home/doried/tdt/data/work1/todo.txt\"\n	done_path = \"/home/doried/tdt/data/work1/done.txt\"\n	download_path = \"/home/doried/tdt/data/work1/downloaded/\"\n	infofile_path = \"/home/doried/tdt/data/work1/info.txt\"\n\n	buffer_file = codecs.open(buffer_path , \"r\" , \"utf-8\")\n	done_file   = codecs.open(done_path   , \"r\" , \"utf-8\")\n\n	intersections = test_buffer_for_redundancies(buffer_file,done_file);\n	isOk = (len(intersections) == 0)\n	if not isOk :\n		response = input(\"Intersections found, continue anyway? (y/n)\");\n		if response[0] in ['n' , 'N']:\n			return;\n		print 'I\\'ll redownload the intersected urls and add only new documents to the topics';\n\n	done_file.close();\n\n	buffer_file.seek(0);\n	buffer_lines = get_lines_of_file(buffer_file);\n	buffer_file.close();\n\n	#opening todo file\n	todo_file   = codecs.open(todo_path   , \"a\" , \"utf-8\")\n\n	topic_number = int(read_config(\"topics_count\"))\n\n	num_of_lines = len(buffer_lines)\n\n	i=0\n	while i<num_of_lines:\n		l1 = buffer_lines[i]\n		l2 = buffer_lines[i+1]\n		l3 = buffer_lines[i+2]\n\n		i = i+3\n\n		topic_title = l1;\n\n		new_topic = 0\n\n		for l in [l2,l3]:\n			if l[0]!='#':\n				intersection = [ x for x in intersections if l == x[2] ]\n				if len(intersection)==0:\n					todo_file.write(`topic_number` + \"\\n\" + topic_title + \"\\n\" + l + \"\\n\")\n					new_topic = 1\n				else:\n					todo_file.write(intersection[0][0] +\"\\n\"  + intersection[0][1]  + \"\\n\" +  intersection[0][2] + \"\\n\")\n		\n		if new_topic==1:\n			topic_number = topic_number+1\n\n	todo_file.close;\n\n	write_config('topics_count',topic_number)\n\n	#empting buffer file\n	buffer_file = codecs.open(buffer_path , \"w\" , \"utf-8\")\n	buffer_file.close();\n\n  \n	#opening done file for append\n	done_file   = codecs.open(done_path   , \"a\" , \"utf-8\")\n	\n	#opening todo file for reading\n	todo_file   = codecs.open(todo_path   , \"r\" , \"utf-8\")\n	todo_lines = get_lines_of_file(todo_file)\n	todo_file.close\n\n	todos = []\n\n	i = 0;\n	len_todos = len(todo_lines)\n	while i<len_todos:\n		todos.append((todo_lines[i],todo_lines[i+1],todo_lines[i+2]))\n		i = i + 3\n\n	failed = []\n\n	for todo in todos:\n		topic_number = int(todo[0])\n		topic_title  = todo[1]\n		url 		 = todo[2]\n\n		if not download_search_results_to_topic(topic_title, url , download_path + `topic_number`):\n			failed.append(todo)\n		else:\n			done_file.write(`topic_number` + \"\\n\" + `topic_title` + \"\\n\" +  url + \"\\n\")\n\n	#empting todo file but writing only failed downloads\n	todo_file = codecs.open(todo_path,\"w\",\"utf-8\")\n\n	for todo in failed:\n		todo_file.write(todo[0] + \"\\n\" + todo[1] + \"\\n\" + todo[2] + \"\\n\")\n\n	todo_file.close;\n\n\n\nmain()\n",
+			"file": "download.py",
+			"file_size": 7454,
+			"file_write_time": 1458485620000000,
+			"settings":
+			{
+				"buffer_size": 7455,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/doried/.local/share/Trash/files/moses.2/src/Client.php",
+			"settings":
+			{
+				"buffer_size": 2839,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/doried/Downloads/QueryBuilder.php",
+			"settings":
+			{
+				"buffer_size": 7693,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "<?php\n/**\n * Created by PhpStorm.\n * User: Slaiman\n * Date: 21/10/2015\n * Time: 01:56 م\n */\n\nnamespace syndex\\SearchBundle\\ElasticSearch;\n\nuse Elasticsearch\\Client;\n\nclass Search\n{\n    private $params = array();\n    private $index;\n    private $hostindex;\n    private $urlsearch;\n    private $type ;\n    function __construct()\n    {\n        $this->params['hosts'] = array (\n            '43.252.36.164:9200'\n        );\n        $this->hostindex = \"host\";\n        $this->index = array(\"news\", \"shmra\", \"shmraplaces\", \"shmraforeign\");\n        $this->type = \"doc\";\n        $this->urlsearch = array();\n    }\n    function addurlsearch($query){\n        array_push($this->urlsearch, $query1279);\n    }\n    function settype($type){\n        $this->type = $type;\n    }\n    function setindex($index){\n        $this->index = $index;\n    }\n\n    function main_results_for_query($query)\n    {\n        $client = new Client($this->params);\n        $params['index'] = $this->index;       //index\n        if (isset($this->type))\n            $params['type'] = $this->type;\n        $params['body'] = $query;\n        $ret = $client->search($params);\n        return $ret;\n    }\n\n    function main_results($builder){\n        $query = $builder->build();\n        $client = new Client($this->params);\n        $params['index'] = $this->index;       //index\n        if (isset($this->type))\n            $params['type'] = $this->type;\n        $params['body'] = $query;\n        $ret = $client->search($params);\n        return $ret;\n    }\n    function customizedScholarOrder($results,$from){\n        $all=$results['hits']['hits'];\n        $lookinmena=array();\n        $other=array();\n        foreach ($all as $res){\n            if (strpos($res['_source']['url'], 'lookinmena') !== false){\n                array_push($lookinmena,$res);\n            }else{\n                array_push($other,$res);\n            }\n        }\n//	foreach ($other as $res){\n//		array_push($lookinmena,$res);\n//	}\n        $merge=array();\n        $ret=array();\n        $i=0;\n        $j=0;\n        $c1=count($lookinmena);\n        $c2=count($other);\n\n        while ($i<count($lookinmena)){\n            if ($i>=2)\n                break;\n            array_push($merge,$lookinmena[$i]);\n            $i=$i+1;\n        }\n\n        while (($i<$c1)&&($j<$c2)){\n            $date1=$other[$j]['_source']['dead_line'];\n            $date2=$lookinmena[$i]['_source']['dead_line'];\n            $format = \"y-m-d\";\n\n            if(strcmp($date1,$date2)<0){\n                array_push($merge,$other[$j]);\n                $j=$j+1;\n            }else{\n                array_push($merge,$lookinmena[$i]);\n                $i=$i+1;\n            }\n        }\n        while ($i<count($lookinmena)){\n            array_push($merge,$lookinmena[$i]);\n            $i=$i+1;\n        }\n        while($j<count($other)){\n            array_push($merge,$other[$j]);\n            $j=$j+1;\n        }\n        for ($i=0;$i<10;$i++){\n            if (count($merge)<=$i+$from)\n                break;\n            array_push($ret,$merge[$i+$from]);\n        }\n        $results['hits']['hits']=$ret;\n        return $results;\n    }\n    function grouped_results($builder, $target){\n        $places = array();\n        $rules = array();\n        $news = array();\n        $final = array();\n        $discarded = 0;\n        $exclude = array();\n        $sites = array();\n\n        $length = 0;\n        $time = 0;\n        while ($length < $target) {\n            $numres = count($final) + count($news) + count($places);\n\n\n            $cur = clone $builder;\n            if ($time > 0)\n                $cur->excludeFilter(\"host\", $exclude);\n\n            $results = $this->main_results($cur);\n            $time = $time + $results['took'];\n            $hits = $results['hits']['hits'];\n\n            if (count($hits) == 0) { //no more results return\n                $final = array_merge($places, $news, $rules, $final);\n                $results['hits']['hits'] = array();\n//              add places and news\n                for ($i = $target - 10; $i < count($final); $i++)\n                    array_push($results['hits']['hits'], $final[$i]);\n//                $results['hits']['hits']=$final;\n                $results['took'] = $time;\n                return $results;\n            }\n            foreach ($hits as $hit) {\n                $host = $hit['_source']['host'];\n                if (array_key_exists($host, $sites)) {\n                    $sites[$host] = $sites[$host] + 1;\n                } else {\n                    $sites[$host] = 1;\n                }\n                if ($sites[$host] > 2)\n                    continue;\n\n                if (strcmp($host, \"shamranews\") == 0)\n                    array_push($news, $hit);\n                else if (strcmp($host, \"shmraplaces\") == 0)\n                    array_push($places, $hit);\n                else if (strcmp($host, \"shmrarules\") == 0)\n                    array_push($rules, $hit);\n                else if (strlen($hit['_source']['title'])>7)\n                    array_push($final, $hit);\n                else {\n                    $discarded = $discarded + 1;\n                    $length = $length - 1;\n                }\n\n                $length = $length + 1;\n                if ($sites[$host] == 2) {\n                    array_push($exclude, $host);\n                }\n\n                //$length=count($final)+count($places)+count($news);\n                if ($length == $target) {\n                    $final = array_merge($places, $news, $rules, $final);\n                    $results['hits']['hits'] = array();\n                    for ($i = $target - 10; $i < count($final); $i++)\n                        array_push($results['hits']['hits'], $final[$i]);\n                    $results['took'] = $time;\n                    return $results;\n                }\n            }\n            $builder->next($length + $discarded - 2 * count($exclude));\n        }\n        return \"\";\n    }\n    function printResults($result){\n        //print_r($result);\n        echo \"results<br/>-----------<br/>\";\n        echo $result['took'].'<br/>';\n        $all=$result['hits']['hits'];\n        foreach ($all as $res){\n            $score=$res['_score'];\n            $source=$res['_source'];\n            $highlight=$res['highlight']['content'];\n            $title=$source['title'];\n            $content=$source['content'];\n            $url=$source['url'];\n            $host=$source['host'];\n            $text=\"\";\n            foreach ($highlight as $h){\n                $text=$text.$h.'<br/>';\n            }\n            if (strcmp($host,\"shmraurls\")==0){\n                echo \"<B> Special result - site </B><br/>\";\n                print_r($source);\n            }\n            if (strcmp($host,\"shamranews\")==0){\n                print_r($source);\n                echo \"<B> Special result - news </B><br/>\";\n            }\n\n            echo \"<a href='$url'>$title</a><br/>\";\n            echo \"$score<br/>\";\n            echo htmlspecialchars($text);\n            echo '<br/>';\n            echo \"---------------------<br/>\";\n        }\n    }\n}\n",
+			"file": "/home/doried/Downloads/Search.php",
+			"file_size": 7262,
+			"file_write_time": 1465471897000000,
+			"settings":
+			{
+				"buffer_size": 7039,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/Python/Python.sublime-build",
+	"command_palette":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 111.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/doried/tdt/scripts/tdt.py",
+		"/usr/local/lib/python2.7/dist-packages/configparser.py",
+		"/home/doried/tdt/scripts/project.sublime-project",
+		"/home/doried/tdt/scripts/html_parser.py",
+		"/home/doried/xdebug/xdebug.sublime-project"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"Financial Times",
+			"Business Insider",
+			"Telegraph",
+			"The Telegraph",
+			"work",
+			"work1",
+			"readline",
+			"readlin",
+			"topicscount",
+			"topics_count",
+			"    ",
+			"\\t",
+			"    "
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"work1",
+			"work",
+			"topics_count",
+			"topicscount",
+			"\\t"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 5,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "html_parser.py",
+					"settings":
+					{
+						"buffer_size": 32311,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								28719,
+								28719
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 15183.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/opt/lampp/phpmyadmin/config.inc.php",
+					"settings":
+					{
+						"buffer_size": 5107,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4726,
+								4726
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1885.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "download.py",
+					"settings":
+					{
+						"buffer_size": 7455,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1561,
+								1561
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 871.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/home/doried/.local/share/Trash/files/moses.2/src/Client.php",
+					"settings":
+					{
+						"buffer_size": 2839,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/home/doried/Downloads/QueryBuilder.php",
+					"settings":
+					{
+						"buffer_size": 7693,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7396,
+								7396
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2847.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/home/doried/Downloads/Search.php",
+					"settings":
+					{
+						"buffer_size": 7039,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 351.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 217.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 207.0,
+	"status_bar_visible": true
+}
