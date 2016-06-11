@@ -45,6 +45,14 @@ public class DirectoryProcessor {
     }
     
     /**
+     * @throws Exception 
+     */
+    public static StoryFile readStoryFile(File file,boolean processText,int titleBoosting) throws Exception{
+    	StoryFile sfile = new StoryFile(file, extractTopic_StoryTag(file.getName()),processText,titleBoosting);
+    	return sfile;
+    }
+    
+    /**
      * Creates a topic, putting its tag as the directtory name (last directory name in its path). Ex: /home/doried/22 so topicTag=22
      */
     public static TopicFiles readTopicFiles(File topicDir,boolean processText) throws Exception{
@@ -125,8 +133,8 @@ public class DirectoryProcessor {
     
     public static void copyTopicsAndTextProcessThem() throws Exception{
     	skipped=0;
-        String topicsPath = "/home/doried/tdt/data/test2/text/";
-        String outputPath = "/home/doried/tdt/test/topics/";
+        String topicsPath = "/home/doried/tdt/test/modified/topics/";
+        String outputPath = "/home/doried/tdt/test/modified/allStories/";
         
         List<File> topicDirs = getListOfDirectories(topicsPath);
         
@@ -148,7 +156,7 @@ public class DirectoryProcessor {
             		continue;
             	}
                  
-                String output = f.getStoryUrl() + "\n" + f.getStoryTitle() + "\n" + f.getStoryDateAsString() + "\n" + processedContent;
+                String output = f.getStoryUrl() + "\n" + f.getStoryTitle() + "\n" + processedContent + "\n" + f.getStoryContent();
 
                 String output_story_name = topicDir.getName() + "-" + storyFile.getName();
                 PrintWriter wr = new PrintWriter(new File( newDir.getPath() +"/" + output_story_name ));
@@ -158,9 +166,36 @@ public class DirectoryProcessor {
         }    
     }
     
+    public static void copyTopicsToADirectory() throws Exception{
+    	skipped=0;
+        String topicsPath = "/home/doried/tdt/test/modified/4-topics/topics/";
+        String outputPath = "/home/doried/tdt/test/modified/4-topics/all/";
+        List<File> topicDirs = getListOfDirectories(topicsPath);
+
+        for (File topicDir : topicDirs){
+        			
+            List<File> topicFiles = getListOfFiles(topicDir.getAbsolutePath());
+            
+            for(File storyFile : topicFiles){
+            	StoryFile f = readStoryFile(storyFile,false);
+            	String processedContent = TextProcessor.processText(f.getStoryContent());
+            	if (processedContent.split(" ").length < 200){
+            		System.out.println(++skipped);
+            		continue;
+            	}
+                 
+                String output = f.getStoryUrl() + "\n" + f.getStoryTitle() + "\n" + f.getStoryDateAsString() + "\n" + processedContent;
+
+                String output_story_name =  topicDir.getName() + "-" + storyFile.getName();
+                PrintWriter wr = new PrintWriter(new File( outputPath +"/" + output_story_name ));
+                wr.write(output);
+                wr.close();
+            }
+        }    
+    }
     
     public static void main(String[] args) throws Exception {
-    	copyTopicsAndTextProcessThem();
+    	copyTopicsToADirectory();
         //copyTopicFilesToOneDirectory();
     }
 }

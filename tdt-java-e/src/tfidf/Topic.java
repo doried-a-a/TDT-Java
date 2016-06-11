@@ -58,7 +58,7 @@ public class Topic implements ISimilatityMeasurable {
         	topicRepresentation.replaceWord(w, newVal);
         }
         
-        cuttedTopicRepresentation = this.topicRepresentation.getFilteredLightWords(400, false);
+        cuttedTopicRepresentation = this.topicRepresentation.getFilteredLightWords(200, false);
         
         numOfAdaptedStories++;
     }

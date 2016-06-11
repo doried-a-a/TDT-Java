@@ -6,6 +6,7 @@
 package tfidf;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import tdt.LexicalWord;
 import tdt.Word;
@@ -98,6 +99,10 @@ public class IdfExternalProvider implements IIDFProvider{
         return docFreq.getOrDefault(w, 0);
     }
     
+    public int getTotalTermsCount(){
+    	return docFreq.keySet().size();
+    }
+    
     public double getIdf(Word w){
     	double df = this.getDocumentFrequency(w);
     	double dc=(double)this.getTotalDocumentsCount();
@@ -121,6 +126,10 @@ public class IdfExternalProvider implements IIDFProvider{
 
 	public int getDocumentFrequency(Word w) {
 		return getDf(w);
+	}
+	
+	public Set<Word> getTermsSet(){
+		return this.docFreq.keySet();
 	}
     
     
