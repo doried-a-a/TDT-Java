@@ -17,6 +17,7 @@ public class Topic implements ISimilatityMeasurable {
     
     public List<String> storyTitles;
     public List<TfidfVectorSpaceDocumentRepresentation> stories ;
+    public List<TfidfVectorSpaceDocumentRepresentation> adaptedStories ;
     
     private String topicTag;
     private double topicNormalizationFactor=-1;
@@ -39,6 +40,7 @@ public class Topic implements ISimilatityMeasurable {
         cuttedTopicRepresentation = new TfidfVectorSpaceDocumentRepresentation(idfProvider, date);
         stories = new ArrayList();
         storyTitles = new ArrayList();
+        adaptedStories = new ArrayList<TfidfVectorSpaceDocumentRepresentation>();
     }
     
     /**
@@ -48,20 +50,20 @@ public class Topic implements ISimilatityMeasurable {
      * You still need to invoke addStoryToTopic to add it.
      * @param story the vector space representation of this story, as TfidfVectorSpaceDocumentRepresentation
      */
-    public void adaptStoryIntoTopic(TfidfVectorSpaceDocumentRepresentation story ){
-    	
-    	Set s = story.getWordsOfDocument();
-        for(Word w:story.getWordsOfDocument()){
-        	double prevVal = topicRepresentation.getActualValue(w);
-        	//double newVal = (this.numOfAdaptedStories*prevVal + story.getActualValue(w))/(numOfAdaptedStories+1.0);
-        	double newVal = prevVal + story.getActualValue(w);
-        	topicRepresentation.replaceWord(w, newVal);
-        }
-        
-        cuttedTopicRepresentation = this.topicRepresentation.getFilteredLightWords(200, false);
-        
-        numOfAdaptedStories++;
-    }
+//    public void adaptStoryIntoTopic(TfidfVectorSpaceDocumentRepresentation story ){
+//    	
+//    	Set s = story.getWordsOfDocument();
+//        for(Word w:story.getWordsOfDocument()){
+//        	double prevVal = topicRepresentation.getActualValue(w);
+//        	//double newVal = (this.numOfAdaptedStories*prevVal + story.getActualValue(w))/(numOfAdaptedStories+1.0);
+//        	double newVal = prevVal + story.getActualValue(w);
+//        	topicRepresentation.replaceWord(w, newVal);
+//        }
+//        
+//        cuttedTopicRepresentation = this.topicRepresentation.getFilteredLightWords(200, false);
+//        
+//        numOfAdaptedStories++;
+//    }
 
     /**
      * Adds a story to the topic without using it in updating the representation of this topic.
@@ -73,6 +75,10 @@ public class Topic implements ISimilatityMeasurable {
     public void addStoryToTopic(String storyTitle,TfidfVectorSpaceDocumentRepresentation story){
         stories.add(story);
         storyTitles.add(storyTitle);
+    }
+    
+    public void addStoryToAdapted(TfidfVectorSpaceDocumentRepresentation story){
+    	adaptedStories.add(story);
     }
     
     private double getSimilarityWithStory(TfidfVectorSpaceDocumentRepresentation other){

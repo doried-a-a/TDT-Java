@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import files.StoryFile;
 import tdt.ISimilatityMeasurable;
 import tdt.LexicalWord;
 import tdt.Word;
@@ -14,6 +15,10 @@ import vectorspace.AbstractVectorSpaceDocumentRepresentation;
 
 public class TfidfVectorSpaceDocumentRepresentation extends vectorspace.AbstractVectorSpaceDocumentRepresentation{
     IIDFProvider idfProvider;
+    StoryFile storyFile;
+    int index = -1;
+    
+    private HashMap<AbstractVectorSpaceDocumentRepresentation,Double> cachedSimilarity = new HashMap<AbstractVectorSpaceDocumentRepresentation, Double>();
     
     public TfidfVectorSpaceDocumentRepresentation(IIDFProvider idfProvider,Date date){
         super(date);
@@ -23,6 +28,22 @@ public class TfidfVectorSpaceDocumentRepresentation extends vectorspace.Abstract
     public TfidfVectorSpaceDocumentRepresentation(HashMap<Word,Double> docVector, IIDFProvider idfProvider,Date date){
         super(docVector,date);
         this.idfProvider = idfProvider;
+    }
+    
+    public StoryFile getStoryFile(){
+    	return this.storyFile;
+    }
+    
+    public void setStoryFile(StoryFile sFile){
+    	this.storyFile = sFile;
+    }
+    
+    public void setIndex(int index){
+    	this.index=index;
+    }
+    
+    public int getIndex(){
+    	return this.index;
     }
     
     public TfidfVectorSpaceDocumentRepresentation(String docText , IIDFProvider idfProvider,Date date){
@@ -102,6 +123,11 @@ public class TfidfVectorSpaceDocumentRepresentation extends vectorspace.Abstract
         
         AbstractVectorSpaceDocumentRepresentation doc = (AbstractVectorSpaceDocumentRepresentation) other;
         
+        Double cached = cachedSimilarity.getOrDefault(doc, null);
+        if(cached!=null)
+        	return cached;
+        
+        
         double cosineSimilarity=0;
         
         //computing cosine the angle between the vectors : dot product / product of the two magnitudes
@@ -128,7 +154,10 @@ public class TfidfVectorSpaceDocumentRepresentation extends vectorspace.Abstract
         
         double days = Math.abs(Math.round((this.getDate().getTime() - doc.getDate().getTime()) / (double) 86400000));
         double timeSimilarity = Math.exp(-0.5*days);
-        return 1 * cosineSimilarity ;// + 0.2*timeSimilarity;
+        
+        cachedSimilarity.put(doc, cosineSimilarity );
+        
+        return 1 * cosineSimilarity  + 0*timeSimilarity;
         
     }
     

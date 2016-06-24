@@ -43,7 +43,7 @@ public class Result {
 	}
 	
 	public double getPriorYesRate(){
-		return (double)numberOfRealYes/allNumber;
+		return ((double)numberOfRealYes)/allNumber;
 	}
 
 	public double getPriorNoRate(){

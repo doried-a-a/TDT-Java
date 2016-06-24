@@ -168,8 +168,8 @@ public class DirectoryProcessor {
     
     public static void copyTopicsToADirectory() throws Exception{
     	skipped=0;
-        String topicsPath = "/home/doried/tdt/test/modified/4-topics/topics/";
-        String outputPath = "/home/doried/tdt/test/modified/4-topics/all/";
+        String topicsPath = "/home/doried/tdt/test/modified/best-det-2/topics/";
+        String outputPath = "/home/doried/tdt/test/modified/best-det-2/all/";
         List<File> topicDirs = getListOfDirectories(topicsPath);
 
         for (File topicDir : topicDirs){
@@ -178,7 +178,7 @@ public class DirectoryProcessor {
             
             for(File storyFile : topicFiles){
             	StoryFile f = readStoryFile(storyFile,false);
-            	String processedContent = TextProcessor.processText(f.getStoryContent());
+            	String processedContent =  f.getStoryContent(); // TextProcessor.processText(f.getStoryContent());
             	if (processedContent.split(" ").length < 200){
             		System.out.println(++skipped);
             		continue;
@@ -186,7 +186,7 @@ public class DirectoryProcessor {
                  
                 String output = f.getStoryUrl() + "\n" + f.getStoryTitle() + "\n" + f.getStoryDateAsString() + "\n" + processedContent;
 
-                String output_story_name =  topicDir.getName() + "-" + storyFile.getName();
+                String output_story_name =  /*topicDir.getName() + "-" +*/ storyFile.getName();
                 PrintWriter wr = new PrintWriter(new File( outputPath +"/" + output_story_name ));
                 wr.write(output);
                 wr.close();

@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class StoryFile {
+public class StoryFile  implements Comparable<StoryFile>{
 	/**
 	 * Tag maybe used by us to determine which story belongs to which topic.
 	 */
@@ -137,7 +137,7 @@ public class StoryFile {
     	String processedStoryTitle = nlp.TextProcessor.processText(storyTitle);
     	
     	while(titleBoosting-->0){
-    		storyContent += processedStoryTitle;
+    		storyContent += processedStoryTitle + " ";
     	}
     	
     	if(storyUrl.contains("theaustralian"))
@@ -145,5 +145,9 @@ public class StoryFile {
     	
     	sc.close();
 
+	}
+
+	public int compareTo(StoryFile o) {
+		return this.storyDate.compareTo(o.storyDate);
 	}
 }
