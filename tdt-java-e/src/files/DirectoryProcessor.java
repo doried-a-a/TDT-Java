@@ -168,8 +168,8 @@ public class DirectoryProcessor {
     
     public static void copyTopicsToADirectory() throws Exception{
     	skipped=0;
-        String topicsPath = "/home/doried/tdt/test/modified/best-det-2/topics/";
-        String outputPath = "/home/doried/tdt/test/modified/best-det-2/all/";
+        String topicsPath = "/home/doried/tdt/test/modified/no-date/topics/";
+        String outputPath = "/home/doried/tdt/test/modified/no-date/all/";
         List<File> topicDirs = getListOfDirectories(topicsPath);
 
         for (File topicDir : topicDirs){

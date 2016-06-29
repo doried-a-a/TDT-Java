@@ -152,12 +152,13 @@ public class TfidfVectorSpaceDocumentRepresentation extends vectorspace.Abstract
        // double timeSimilarity = Math.log( 1 + 1.0/days) / Math.log(2.0); // for hours in [1 - inf ] => timeSimilarity in [1 - 0]
      //   System.out.println(days + " : "  + ( 1 + 1.0/days)+ " - " + Math.log(1+1.0/days));
         
-        double days = Math.abs(Math.round((this.getDate().getTime() - doc.getDate().getTime()) / (double) 86400000));
-        double timeSimilarity = Math.exp(-0.5*days);
+      //  double days = Math.abs(Math.round((this.getDate().getTime() - doc.getDate().getTime()) / (double) 86400000));
+       // double timeSimilarity = Math.exp(-0.5*days);
         
+       
         cachedSimilarity.put(doc, cosineSimilarity );
         
-        return 1 * cosineSimilarity  + 0*timeSimilarity;
+        return 1 * cosineSimilarity ; //+ 0*timeSimilarity;
         
     }
     

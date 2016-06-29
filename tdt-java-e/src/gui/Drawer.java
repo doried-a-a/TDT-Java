@@ -104,4 +104,43 @@ public class Drawer {
         chartPanel.setSize(this.frame.getSize());
         chartPanel.setVisible(true);
 	}
+	
+	public void drawInLinearScale(ArrayList<Double> x,ArrayList<Double> y,String title){
+		if(x.size() != y.size())
+			throw new RuntimeException("Drawer: Lists x and y don't have the same size.");
+		
+		XYSeries series = new XYSeries(title);
+		for(int i=0;i<x.size();i++)
+			series.add(x.get(i), y.get(i));
+		
+		
+		if(this.dataset==null)
+			 this.dataset = new XYSeriesCollection();
+		
+		XYSeriesCollection dataset = this.dataset;
+		
+        dataset.addSeries(series);
+        
+        
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                this.title,
+                this.xAxis,
+                this.yAxis,
+                dataset, 
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+                );
+        
+        chart.getXYPlot().setRenderer(new XYSplineRenderer());
+        ChartPanel chartPanel = new ChartPanel(chart);
+        
+        if(this.panel != null)
+        	this.frame.remove(this.panel);
+        this.panel=chartPanel;
+        this.frame.add(chartPanel);
+        chartPanel.setSize(this.frame.getSize());
+        chartPanel.setVisible(true);
+	}
 }
